@@ -51,6 +51,8 @@ public class VertxRunMojo extends AbstractMojo {
 
 	private static final String VERTX_MODS_SYSTEM_PROPERTY = "vertx.mods";
 
+	private static final String VERTX_CLUSTER_MANAGER_FACTORY_PROPERTY = "vertx.clusterManagerFactory";
+
 	/**
 	 * The Maven project.
 	 * 
@@ -175,6 +177,16 @@ public class VertxRunMojo extends AbstractMojo {
 	 */
 	private String vertxHomeDirectory;
 
+    /**
+     * <p>
+     * In the Vert.x 2.x version, a system property called ""vertx.clusterManagerFactory"
+     * is required to be set when running the Vert.x server.
+     * </p>
+     *
+     * @parameter expression="${run.vertxClusterManagerFactory}"
+     */
+    private String vertxClusterManagerFactory;
+
 	public void execute() throws MojoExecutionException {
 
 		if (vertxHomeDirectory != null) {
@@ -184,6 +196,11 @@ public class VertxRunMojo extends AbstractMojo {
 					+ "/mods");
 			getLog().info("Vert.X home: " + vertxHomeDirectory);
 		}
+
+        if (vertxClusterManagerFactory != null) {
+            System.setProperty(VERTX_CLUSTER_MANAGER_FACTORY_PROPERTY, vertxClusterManagerFactory);
+            getLog().info("The \"vertx.clusterManagerFactory\" is set to: " + vertxClusterManagerFactory);
+        }
 
 		List<String> args = new ArrayList<>();
 		boolean isModule = false;
